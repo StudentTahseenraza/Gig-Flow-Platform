@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --neon-blue: #00f3ff;
+    --neon-purple: #b967ff;
+    --neon-pink: #ff00ff;
+    --cyber-dark: #0a0a0f;
+    --cyber-gray: #1a1a2e;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cyber-dark text-white font-['Rajdhani'];
+    overflow-x: hidden;
+    font-weight: 300;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(0, 243, 255, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(185, 103, 255, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(255, 0, 255, 0.05) 0%, transparent 50%),
+      var(--cyber-dark);
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-cyber-gray;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-neon-blue to-neon-purple rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gradient-to-b from-neon-purple to-neon-pink;
+  }
+}
+
+@layer components {
+  .cyber-border {
+    position: relative;
+    border: 2px solid transparent;
+    background: linear-gradient(var(--cyber-dark), var(--cyber-dark)) padding-box,
+                linear-gradient(45deg, var(--neon-blue), var(--neon-purple)) border-box;
+  }
+
+  .neon-text {
+    text-shadow: 0 0 10px currentColor,
+                 0 0 20px currentColor,
+                 0 0 30px currentColor;
+  }
+
+  .hologram-card {
+    background: linear-gradient(135deg, 
+      rgba(0, 243, 255, 0.1) 0%,
+      rgba(185, 103, 255, 0.1) 25%,
+      rgba(255, 0, 255, 0.1) 50%,
+      rgba(0, 243, 255, 0.1) 75%,
+      rgba(185, 103, 255, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hologram-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.1), 
+      transparent);
+    animation: scan 3s linear infinite;
+  }
+
+  .particle-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--neon-blue);
+    border-radius: 50%;
+    animation: particle 15s linear infinite;
+  }
+
+  .glitch-text {
+    position: relative;
+    animation: glitch 3s infinite;
+  }
+
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glitch-text::before {
+    left: 2px;
+    text-shadow: -2px 0 #ff00ff;
+    animation: glitch-top 1s infinite linear alternate-reverse;
+  }
+
+  .glitch-text::after {
+    left: -2px;
+    text-shadow: 2px 0 #00f3ff;
+    animation: glitch-bottom 1.5s infinite linear alternate-reverse;
+  }
+
+  @keyframes glitch-top {
+    0% { clip-path: inset(0 0 0 0); }
+    100% { clip-path: inset(10% 0 90% 0); }
+  }
+
+  @keyframes glitch-bottom {
+    0% { clip-path: inset(0 0 0 0); }
+    100% { clip-path: inset(90% 0 10% 0); }
+  }
+
+  .terminal-text {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(90deg, #00f3ff, #b967ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: terminal-typing 4s steps(40, end) infinite;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid #00f3ff;
+  }
+
+  @keyframes terminal-typing {
+    0% { width: 0; }
+    50% { width: 100%; }
+    100% { width: 0; }
+  }
+
+  .matrix-rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -2;
+    background: linear-gradient(to bottom, 
+      transparent 0%,
+      rgba(0, 243, 255, 0.03) 50%,
+      transparent 100%);
+  }
+}
+/* Confetti Animation */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: var(--neon-blue);
+  top: -10px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti-animation {
+  animation: confetti-fall 2s ease-in-out forwards;
+}
