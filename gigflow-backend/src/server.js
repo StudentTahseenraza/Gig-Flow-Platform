@@ -44,11 +44,15 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',                 // Local frontend
+    'https://gig-flow-platform.vercel.app',  // Deployed frontend
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }
+
 
 app.use(cors(corsOptions))
 
