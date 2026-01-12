@@ -15,6 +15,10 @@ import GigDetailPage from './pages/GigDetailPage'
 import CreateGigPage from './pages/CreateGigPage'
 import ProfilePage from './pages/ProfilePage'
 
+import { debugAPI } from './utils/debug'
+
+
+
 
 function App() {
   useEffect(() => {
@@ -32,6 +36,10 @@ function App() {
     
     return unsubscribe
   }, [])
+
+  useEffect(() => {
+  debugAPI()
+}, [])
 
   return (
     <Provider store={store}>

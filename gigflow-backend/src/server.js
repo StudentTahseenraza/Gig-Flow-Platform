@@ -42,19 +42,33 @@ mongoose.connect(process.env.MONGODB_URI, {
   process.exit(1);
 });
 
-// CORS configuration
 const corsOptions = {
-  origin: [
-    'http://localhost:5173',                 // Local frontend
-    'https://gig-flow-platform.vercel.app',  // Deployed frontend
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'https://gig-flow-platform.vercel.app',
+      'https://gigflow-platform.vercel.app' // without hyphen if different
+    ];
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Set-Cookie']
+};
 
+app.use(cors(corsOptions));
 
-app.use(cors(corsOptions))
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // Middleware
 // app.use(cors(corsOptions));
@@ -88,14 +102,26 @@ app.use('/api/auth', authRoutes);
 app.use('/api/gigs', gigRoutes);
 app.use('/api/bids', bidRoutes);
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'healthy',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
-  });
-});
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV,
+    cors: {
+      allowedOrigins: ['http://localhost:5173', 'https://gig-flow-platform.vercel.app']
+    }
+  })
+})
+
+// Simple test endpoint
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: 'Backend API is working!',
+    timestamp: new Date().toISOString()
+  })
+})
 
 // Error handler (should be last)
 app.use(errorHandler);

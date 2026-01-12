@@ -1,30 +1,53 @@
 import axios from 'axios'
 
-// Create axios instance (works for both local & deployed)
+// Get API URL from environment variable
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
+
+// Create axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL + '/api',
-  withCredentials: true, // REQUIRED for HttpOnly cookies (auth)
+  baseURL: API_BASE_URL + '/api',
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
-// Optional: request interceptor (debug / token logic if needed later)
+// Add request interceptor for debugging
 api.interceptors.request.use(
   (config) => {
+    console.log(`🌐 API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`)
     return config
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('🌐 API Request Error:', error)
+    return Promise.reject(error)
+  }
 )
 
-// Response interceptor (global auth handling)
+// Response interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`✅ API Response: ${response.status} ${response.config.url}`)
+    return response
+  },
   (error) => {
+    console.error('❌ API Response Error:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message
+    })
+    
     if (error.response?.status === 401) {
-      // If user is unauthorized, redirect to login
-      window.location.href = '/login'
+      // Clear any stored auth data
+      localStorage.removeItem('authState')
+      localStorage.removeItem('user')
+      
+      // Redirect to login
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login'
+      }
     }
+    
     return Promise.reject(error)
   }
 )

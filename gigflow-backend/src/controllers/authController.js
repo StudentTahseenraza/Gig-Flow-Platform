@@ -9,17 +9,20 @@ const generateToken = (id) => {
   });
 };
 
-// Set JWT as HttpOnly cookie
 const setTokenCookie = (res, token) => {
+  const isProduction = process.env.NODE_ENV === 'production'
+  
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-  };
+    secure: isProduction, // true in production (HTTPS)
+    sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-site in production
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    path: '/',
+    domain: isProduction ? '.onrender.com' : undefined // Set domain for production
+  }
   
-  res.cookie('token', token, cookieOptions);
-};
+  res.cookie('token', token, cookieOptions)
+}
 
 // @desc    Register user
 // @route   POST /api/auth/register
