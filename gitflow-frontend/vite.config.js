@@ -9,11 +9,25 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
+        secure: false,
       },
       '/socket.io': {
         target: 'http://localhost:5000',
         ws: true,
-      },
-    },
+      }
+    }
   },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          three: ['three', '@react-three/fiber', '@react-three/drei'],
+          ui: ['framer-motion', 'lucide-react']
+        }
+      }
+    }
+  }
 })
