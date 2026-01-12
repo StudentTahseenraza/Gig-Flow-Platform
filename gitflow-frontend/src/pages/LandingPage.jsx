@@ -18,7 +18,6 @@ import {
   Clock
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import AnimatedButton from '../components/AnimatedButton'
 import HologramCard from '../components/HologramCard'
 import ThreeDBackground from '../components/ThreeDBackground'
 

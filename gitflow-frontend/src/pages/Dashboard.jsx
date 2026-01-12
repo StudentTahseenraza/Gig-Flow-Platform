@@ -17,7 +17,6 @@ import {
 // import axios from 'axios'
 import HologramCard from '../components/HologramCard'
 import AnimatedButton from '../components/AnimatedButton'
-import GigCard from '../components/GigCard'
 
 export default function Dashboard() {
   const { user } = useSelector((state) => state.auth)

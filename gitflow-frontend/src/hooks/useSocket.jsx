@@ -11,9 +11,10 @@ export const useSocket = () => {
     if (!user) return
 
     // Initialize socket connection
-    socketRef.current = io('http://localhost:5000', {
-      withCredentials: true,
-    })
+    socketRef.current = io(import.meta.env.VITE_API_BASE_URL, {
+  withCredentials: true,
+})
+
 
     // Join user's private room
     socketRef.current.emit('join-user-room', user._id)
