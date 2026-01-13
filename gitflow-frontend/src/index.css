@@ -207,3 +207,56 @@
 .confetti-animation {
   animation: confetti-fall 2s ease-in-out forwards;
 }
+
+/* Celebration Animations */
+@keyframes float-up {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes premium-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(185, 103, 255, 0.8);
+  }
+}
+
+.premium-glow {
+  animation: premium-glow 2s infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.sparkle {
+  animation: sparkle 1.5s infinite;
+}
+
+/* Premium Badge */
+.premium-badge {
+  background: linear-gradient(45deg, #00f3ff, #b967ff, #ff00ff);
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

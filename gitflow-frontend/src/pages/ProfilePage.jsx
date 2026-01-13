@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
-import { 
-  User, 
-  Mail, 
-  Calendar, 
-  MapPin, 
-  Award, 
+import {
+  User,
+  Mail,
+  Calendar,
+  MapPin,
+  Award,
   Briefcase,
   DollarSign,
   Star,
@@ -22,10 +22,15 @@ import {
   CheckCircle,
   ArrowRight,
   TrendingUp,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Rocket,
+  Crown,
+  Target,
+  Clock
 } from 'lucide-react'
 import AnimatedButton from '../components/AnimatedButton'
 import HologramCard from '../components/HologramCard'
+import PremiumSubscription from '../components/PremiumSubscription'
 
 export default function ProfilePage() {
   const dispatch = useDispatch()
@@ -54,6 +59,46 @@ export default function ProfilePage() {
     activeBids: 3,
     hiredCount: 8
   })
+
+  const [showPremium, setShowPremium] = useState(false)
+  const [userBids, setUserBids] = useState([
+    {
+      id: 1,
+      gigTitle: "E-commerce Website",
+      price: 1200,
+      status: "pending",
+      date: "2024-01-15",
+      client: "Tech Corp Inc",
+      priority: "normal"
+    },
+    {
+      id: 2,
+      gigTitle: "Mobile App UI/UX",
+      price: 800,
+      status: "hired",
+      date: "2024-01-10",
+      client: "Design Studio",
+      priority: "high"
+    },
+    {
+      id: 3,
+      gigTitle: "SEO Optimization",
+      price: 500,
+      status: "rejected",
+      date: "2024-01-05",
+      client: "Marketing Agency",
+      priority: "normal"
+    },
+    {
+      id: 4,
+      gigTitle: "Backend API",
+      price: 1500,
+      status: "pending",
+      date: "2024-01-12",
+      client: "Startup XYZ",
+      priority: "normal"
+    }
+  ])
 
   useEffect(() => {
     // Load user data
@@ -126,8 +171,8 @@ export default function ProfilePage() {
                 {/* Avatar */}
                 <div className="relative group">
                   <div className="w-32 h-32 rounded-full border-4 border-[#00f3ff]/30 overflow-hidden">
-                    <img 
-                      src={profileData.avatar} 
+                    <img
+                      src={profileData.avatar}
                       alt={profileData.name}
                       className="w-full h-full object-cover"
                     />
@@ -154,7 +199,7 @@ export default function ProfilePage() {
                         <input
                           type="text"
                           value={profileData.name}
-                          onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                          onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
                           className="text-3xl font-bold bg-transparent border-b border-[#00f3ff] text-white focus:outline-none"
                         />
                       ) : (
@@ -170,7 +215,7 @@ export default function ProfilePage() {
                         <span className="text-gray-400">Pro Member</span>
                       </div>
                     </div>
-                    
+
                     <div className="flex gap-2">
                       {isEditing ? (
                         <AnimatedButton
@@ -220,7 +265,7 @@ export default function ProfilePage() {
                 {isEditing ? (
                   <textarea
                     value={profileData.bio}
-                    onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
+                    onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
                     className="w-full h-32 px-4 py-3 bg-[#1a1a2e] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#00f3ff] resize-none"
                   />
                 ) : (
@@ -274,11 +319,11 @@ export default function ProfilePage() {
                             value={info.value}
                             onChange={(e) => {
                               if (info.label === 'Hourly Rate') {
-                                setProfileData({...profileData, hourlyRate: parseInt(e.target.value.replace('$', '')) || 0})
+                                setProfileData({ ...profileData, hourlyRate: parseInt(e.target.value.replace('$', '')) || 0 })
                               } else if (info.label === 'Location') {
-                                setProfileData({...profileData, location: e.target.value})
+                                setProfileData({ ...profileData, location: e.target.value })
                               } else if (info.label === 'Website') {
-                                setProfileData({...profileData, website: e.target.value})
+                                setProfileData({ ...profileData, website: e.target.value })
                               }
                             }}
                             className="w-full bg-transparent text-white border-b border-gray-600 focus:outline-none focus:border-[#00f3ff]"
@@ -347,7 +392,7 @@ export default function ProfilePage() {
                 <TrendingUp className="w-5 h-5 text-[#00f3ff]" />
                 Performance Metrics
               </h3>
-              
+
               <div className="space-y-6">
                 {[
                   { label: 'Completion Rate', value: 98, color: 'from-[#00f3ff] to-[#00a8ff]' },
@@ -376,7 +421,7 @@ export default function ProfilePage() {
             {/* Quick Actions */}
             <HologramCard className="p-6">
               <h3 className="text-xl font-bold text-white mb-6">Quick Actions</h3>
-              
+
               <div className="space-y-3">
                 {[
                   { label: 'Update Portfolio', icon: Briefcase, color: 'text-[#00f3ff]' },
@@ -406,7 +451,7 @@ export default function ProfilePage() {
                 <Shield className="w-5 h-5 text-[#00ffaa]" />
                 Verification Status
               </h3>
-              
+
               <div className="space-y-4">
                 {[
                   { label: 'Email Verified', status: true, icon: Mail },
@@ -446,6 +491,141 @@ export default function ProfilePage() {
                 <AnimatedButton variant="primary" className="w-full">
                   Upgrade Now
                 </AnimatedButton>
+              </div>
+            </HologramCard>
+
+            {/* Premium Upgrade Card */}
+            <HologramCard className="p-6 bg-gradient-to-br from-[#00f3ff]/10 via-[#b967ff]/10 to-[#ff00ff]/10 border border-[#00f3ff]/20">
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-[#00f3ff] to-[#b967ff] flex items-center justify-center">
+                  <Rocket className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">Ready to Level Up?</h3>
+                <p className="text-gray-300 mb-4">Unlock 10x faster hiring and premium features</p>
+
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  <div className="text-center p-3 rounded-lg bg-white/5">
+                    <div className="text-2xl font-bold text-[#00f3ff]">10x</div>
+                    <div className="text-xs text-gray-400">Faster Hiring</div>
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-white/5">
+                    <div className="text-2xl font-bold text-[#b967ff]">500%</div>
+                    <div className="text-xs text-gray-400">More Visibility</div>
+                  </div>
+                </div>
+
+                <AnimatedButton
+                  variant="primary"
+                  className="w-full mb-3"
+                  onClick={() => setShowPremium(true)}
+                >
+                  <Crown className="w-4 h-4 mr-2" />
+                  Explore Premium
+                </AnimatedButton>
+
+                <div className="text-xs text-gray-500">
+                  Join 5,000+ successful freelancers
+                </div>
+              </div>
+            </HologramCard>
+
+            {/* Premium Modal */}
+            <PremiumSubscription
+              isOpen={showPremium}
+              onClose={() => setShowPremium(false)}
+              user={user}
+            />
+
+            {/* Bid Tracking Section */}
+            <HologramCard className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Target className="w-5 h-5 text-[#00f3ff]" />
+                    My Bids ({userBids.length})
+                  </h3>
+                  <p className="text-gray-400 text-sm">Track your bid applications</p>
+                </div>
+                <div className="px-3 py-1 rounded-full bg-gradient-to-r from-[#00f3ff]/20 to-[#b967ff]/20 text-[#00f3ff] text-sm">
+                  {userBids.filter(b => b.status === 'pending').length} Active
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {userBids.map((bid) => (
+                  <div key={bid.id} className="flex items-center justify-between p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-colors group">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className={`w-3 h-3 rounded-full ${bid.status === 'hired' ? 'bg-green-500' :
+                            bid.status === 'rejected' ? 'bg-red-500' :
+                              'bg-yellow-500'
+                          }`}></div>
+                        <h4 className="font-medium text-white">{bid.gigTitle}</h4>
+                        {bid.priority === 'high' && (
+                          <span className="px-2 py-1 text-xs bg-red-500/20 text-red-400 rounded-full">
+                            Priority
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-400">
+                        <span className="flex items-center">
+                          <DollarSign className="w-3 h-3 mr-1" />
+                          ${bid.price}
+                        </span>
+                        <span className="flex items-center">
+                          <Clock className="w-3 h-3 mr-1" />
+                          {bid.date}
+                        </span>
+                        <span>{bid.client}</span>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <div className={`px-3 py-1 rounded-full text-sm font-medium ${bid.status === 'hired' ? 'bg-green-500/20 text-green-400' :
+                          bid.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
+                            'bg-yellow-500/20 text-yellow-400'
+                        }`}>
+                        {bid.status.charAt(0).toUpperCase() + bid.status.slice(1)}
+                      </div>
+                      {bid.status === 'pending' && (
+                        <button className="mt-2 text-xs text-[#00f3ff] hover:text-[#b967ff] transition-colors">
+                          Withdraw Bid
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {userBids.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Target className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                    <p className="text-gray-400">No bids yet</p>
+                    <p className="text-gray-500 text-sm mt-1">Start bidding on gigs to see them here</p>
+                  </div>
+                ) : (
+                  <div className="pt-4 border-t border-gray-800">
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <div className="text-2xl font-bold text-green-500">
+                          {userBids.filter(b => b.status === 'hired').length}
+                        </div>
+                        <div className="text-xs text-gray-400">Hired</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-yellow-500">
+                          {userBids.filter(b => b.status === 'pending').length}
+                        </div>
+                        <div className="text-xs text-gray-400">Pending</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-red-500">
+                          {userBids.filter(b => b.status === 'rejected').length}
+                        </div>
+                        <div className="text-xs text-gray-400">Rejected</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </HologramCard>
           </div>

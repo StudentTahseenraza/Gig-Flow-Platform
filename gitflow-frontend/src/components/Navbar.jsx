@@ -199,6 +199,14 @@ export default function Navbar() {
                   <User className="h-4 w-4" />
                   <span>Profile</span>
                 </Link>
+
+                {isAuthenticated && user?.isPremium && (
+  <div className="ml-2">
+    <div className="px-2 py-1 text-xs bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full text-white font-bold">
+      PREMIUM
+    </div>
+  </div>
+)}
               </>
             )}
           </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { 
   Briefcase, 
@@ -12,7 +12,8 @@ import {
   XCircle,
   Loader,
   Users,
-  FileText
+  FileText,
+  Rocket
 } from 'lucide-react'
 // import axios from 'axios'
 import HologramCard from '../components/HologramCard'
@@ -20,6 +21,7 @@ import AnimatedButton from '../components/AnimatedButton'
 
 export default function Dashboard() {
   const { user } = useSelector((state) => state.auth)
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     postedGigs: 0,
     activeBids: 0,
@@ -29,6 +31,14 @@ export default function Dashboard() {
   const [recentActivity, setRecentActivity] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [premiumStats, setPremiumStats] = useState({
+    isPremium: false,
+    premiumUntil: null,
+    gigBoost: 1,
+    bidLimit: 10,
+    usedBids: 3,
+    visibilityBoost: 1
+  })
 
   useEffect(() => {
     fetchDashboardData()
@@ -59,6 +69,7 @@ export default function Dashboard() {
           createdAt: new Date()
         }
       ]
+      
 
       // Calculate stats from mock data
       const postedGigs = mockGigs.length
@@ -201,6 +212,61 @@ export default function Dashboard() {
           </HologramCard>
         ))}
       </div>
+
+      {/* Premium Status */}
+      {premiumStats.isPremium ? (
+        <HologramCard className="col-span-full">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="flex items-center gap-4 mb-4 md:mb-0">
+              <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/20 to-orange-500/20">
+                <div className="w-8 h-8 text-yellow-500">👑</div>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  Premium Member
+                  <span className="text-xs px-2 py-1 bg-gradient-to-r from-[#00f3ff] to-[#b967ff] rounded-full">
+                    ACTIVE
+                  </span>
+                </h3>
+                <p className="text-gray-400">
+                  Your gigs get 10x more visibility • Renews on {premiumStats.premiumUntil}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="text-center p-3 rounded-lg bg-white/5">
+                <div className="text-2xl font-bold text-[#00f3ff]">{premiumStats.gigBoost}x</div>
+                <div className="text-xs text-gray-400">Visibility Boost</div>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-white/5">
+                <div className="text-2xl font-bold text-[#b967ff]">∞</div>
+                <div className="text-xs text-gray-400">Bid Limit</div>
+              </div>
+            </div>
+          </div>
+        </HologramCard>
+      ) : (
+        <HologramCard className="col-span-full bg-gradient-to-r from-[#0a0a0f] via-[#1a1a2e] to-[#0a0a0f] border border-[#00f3ff]/30">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="mb-4 md:mb-0">
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Ready for <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00f3ff] to-[#b967ff]">10x Faster</span> Results?
+              </h3>
+              <p className="text-gray-400">
+                Upgrade to Premium and get your gigs seen by top clients first
+              </p>
+            </div>
+            <AnimatedButton 
+              variant="primary"
+              onClick={() => navigate('/profile')}
+              className="px-8 py-3"
+            >
+              <Rocket className="w-5 h-5 mr-2" />
+              Go Premium
+            </AnimatedButton>
+          </div>
+        </HologramCard>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
