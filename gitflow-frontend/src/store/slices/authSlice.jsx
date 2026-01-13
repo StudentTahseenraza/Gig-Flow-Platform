@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
-import api from '../../utils/axiosConfig'
+// import axios from 'axios'
+import api from '../../utils/axiosConfig' // Import your configured api instance
 
 export const register = createAsyncThunk(
   'auth/register',
@@ -14,7 +14,6 @@ export const register = createAsyncThunk(
   }
 )
 
-// Do the same for login, logout, getMe
 export const login = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
@@ -31,7 +30,8 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post('/auth/logout')
+      // Use the same api instance for consistency
+      await api.post('/auth/logout')
     } catch (error) {
       return rejectWithValue(error.response.data)
     }
@@ -42,7 +42,8 @@ export const getMe = createAsyncThunk(
   'auth/getMe',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/api/auth/me')
+      // Use the same api instance for consistency
+      const response = await api.get('/auth/me')
       return response.data
     } catch (error) {
       return rejectWithValue(error.response.data)
@@ -62,6 +63,12 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null
     },
+    // Add a manual logout reducer for immediate UI update
+    manualLogout: (state) => {
+      state.user = null
+      state.isAuthenticated = false
+      state.error = null
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -91,20 +98,37 @@ const authSlice = createSlice({
         state.loading = false
         state.error = action.payload?.message || 'Login failed'
       })
+      .addCase(logout.pending, (state) => {
+        state.loading = true
+      })
       .addCase(logout.fulfilled, (state) => {
+        state.loading = false
         state.user = null
         state.isAuthenticated = false
+        state.error = null
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.loading = false
+        // Even if logout API fails, we still log out locally
+        state.user = null
+        state.isAuthenticated = false
+        state.error = action.payload?.message || 'Logout failed'
+      })
+      .addCase(getMe.pending, (state) => {
+        state.loading = true
       })
       .addCase(getMe.fulfilled, (state, action) => {
+        state.loading = false
         state.user = action.payload
         state.isAuthenticated = true
       })
       .addCase(getMe.rejected, (state) => {
+        state.loading = false
         state.user = null
         state.isAuthenticated = false
       })
   },
 })
 
-export const { clearError } = authSlice.actions
+export const { clearError, manualLogout } = authSlice.actions
 export default authSlice.reducer

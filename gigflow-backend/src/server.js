@@ -11,6 +11,7 @@ const authRoutes = require('./routes/authRoutes');
 const gigRoutes = require('./routes/gigRoutes');
 const bidRoutes = require('./routes/bidRoutes');
 
+
 // Import middleware
 const errorHandler = require('./middleware/error');
 
@@ -76,6 +77,34 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Debug middleware for all requests
+app.use((req, res, next) => {
+  console.log(`\n=== ${new Date().toISOString()} ===`);
+  console.log(`${req.method} ${req.originalUrl}`);
+  console.log('Origin:', req.headers.origin);
+  console.log('Cookies:', req.cookies);
+  console.log('Headers:', JSON.stringify({
+    'content-type': req.headers['content-type'],
+    'user-agent': req.headers['user-agent']
+  }, null, 2));
+  
+  // Log route matching
+  const originalUrl = req.originalUrl;
+  if (originalUrl.includes('/auth')) {
+    console.log(`Auth route detected: ${originalUrl}`);
+  }
+  
+  next();
+});
+
+// Log all registered routes on startup
+console.log('\n=== REGISTERED ROUTES ===');
+console.log('POST /api/auth/register');
+console.log('POST /api/auth/login');
+console.log('POST /api/auth/logout');
+console.log('GET  /api/auth/me');
+console.log('========================\n');
+
 // Make io accessible to controllers via request object
 app.use((req, res, next) => {
   req.io = io;
@@ -96,6 +125,14 @@ io.on('connection', (socket) => {
     console.log('Client disconnected:', socket.id);
   });
 });
+
+// Debug middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} ${req.method} ${req.url}`)
+  console.log('Cookies:', req.cookies)
+  console.log('Headers:', req.headers['origin'])
+  next()
+})
 
 // Routes
 app.use('/api/auth', authRoutes);

@@ -9,9 +9,23 @@ export default function Navbar() {
   const dispatch = useDispatch()
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleLogout = () => {
-    dispatch(logout())
-  }
+ const handleLogout = () => {
+  // Dispatch logout action
+  dispatch(logout())
+    .then(() => {
+      // Force clear any local storage
+      localStorage.clear();
+      // Force reload to clear any state
+      window.location.href = '/';
+    })
+    .catch((error) => {
+      console.error('Logout error:', error);
+      // Even if API fails, clear local state
+      dispatch(manualLogout());
+      localStorage.clear();
+      window.location.href = '/';
+    });
+}
 
   return (
     <nav className="bg-gray-900/80 backdrop-blur-md border-b border-gray-800 fixed w-full z-50">
