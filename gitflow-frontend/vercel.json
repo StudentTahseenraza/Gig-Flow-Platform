@@ -7,19 +7,28 @@
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/(.*)",
       "headers": [
         {
-          "key": "Cache-Control",
-          "value": "no-store"
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
         }
       ]
     }
   ],
-  "functions": {
-    "api/*.js": {
-      "maxDuration": 10
-    }
-  },
-  "regions": ["bom1"]
+  "env": {
+    "VITE_API_BASE_URL": "https://gig-flow-platform.onrender.com"
+  }
 }
