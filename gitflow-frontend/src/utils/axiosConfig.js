@@ -1,48 +1,49 @@
 import axios from 'axios'
 
-// Get API URL from environment variable
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
+// Determine if we're in development or production
+const isDevelopment = import.meta.env.MODE === 'development'
+
+// For development: use proxy
+// For production: use full Render URL
+const API_BASE_URL = isDevelopment 
+  ? ''  // Empty string will use relative paths (proxy)
+  : import.meta.env.VITE_API_BASE_URL || 'https://gig-flow-platform.onrender.com'
+
+console.log('🔧 API Configuration:')
+console.log('Mode:', import.meta.env.MODE)
+console.log('API Base URL:', API_BASE_URL || '(using proxy)')
 
 // Create axios instance
 const api = axios.create({
-  baseURL: API_BASE_URL + '/api',
+  baseURL: isDevelopment ? '/api' : API_BASE_URL + '/api',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
-// Add request interceptor for debugging
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
-    console.log(`🌐 API Request: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`)
+    console.log(`🌐 ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`)
     return config
   },
-  (error) => {
-    console.error('🌐 API Request Error:', error)
-    return Promise.reject(error)
-  }
+  (error) => Promise.reject(error)
 )
 
 // Response interceptor
 api.interceptors.response.use(
-  (response) => {
-    console.log(`✅ API Response: ${response.status} ${response.config.url}`)
-    return response
-  },
+  (response) => response,
   (error) => {
-    console.error('❌ API Response Error:', {
+    console.error('API Error:', {
       url: error.config?.url,
       status: error.response?.status,
       message: error.response?.data?.message || error.message
     })
     
     if (error.response?.status === 401) {
-      // Clear any stored auth data
       localStorage.removeItem('authState')
       localStorage.removeItem('user')
-      
-      // Redirect to login
       if (window.location.pathname !== '/login') {
         window.location.href = '/login'
       }

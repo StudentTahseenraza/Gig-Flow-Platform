@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import io from 'socket.io-client'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-hot-toast'
+import { getSocketURL } from '../utils/api'
 
 export const useSocket = () => {
   const socketRef = useRef(null)
@@ -10,17 +11,12 @@ export const useSocket = () => {
   useEffect(() => {
     if (!user) return
 
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
+    const socketURL = getSocketURL()
+    console.log('🔌 Connecting to Socket.io:', socketURL)
     
-    console.log(`🔌 Connecting Socket.io to: ${API_BASE_URL}`)
-    
-    // Initialize socket connection
-    socketRef.current = io(API_BASE_URL, {
+    socketRef.current = io(socketURL, {
       withCredentials: true,
-      transports: ['websocket', 'polling'], // Fallback transport
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
+      transports: ['websocket', 'polling'],
     })
 
     // Connection events
